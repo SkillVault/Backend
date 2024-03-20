@@ -9,8 +9,9 @@ import logging
 # Ensure you import the function for database operations correctly
 # from database import create_user, create_questions  # Assuming you'll add a new function for question insertion
 
-origin = ['http://localhost:5173',
-# 'https://skillvault-backend.onrender.com'
+origin = [
+    
+'https://skillvault-backend.onrender.com'
 ]
 
 app = FastAPI()
