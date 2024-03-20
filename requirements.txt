@@ -1,4 +1,15 @@
  
- fastapi uvicorn fastapi-cors  motor  pymongo
+ fastapi 
+ uvicorn 
+ fastapi-cors  
+ motor  
+ pymongo
+ bcrypt
+ langchain_together
+ kor
+ pyarrow
+ openpyxl
+ pandas
+ python-dotenv
 
  
