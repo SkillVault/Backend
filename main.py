@@ -25,7 +25,7 @@ app.add_middleware(
 
 @app.get('/')
 def read_root():
-    return {"message": "Welcome to skillvault"}
+    return {"hello": "Welcome to skillvault"}
 
 app.include_router(user.app,prefix="/api/user")
 app.include_router(questions.app,prefix="/api/questions")
