@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from routes import user,questions,company,similarity_score
+from routes import user,questions,company,checkAnswer
+import bcrypt
+import logging
 
 
 
@@ -26,5 +28,5 @@ def read_root():
 app.include_router(user.app,prefix="/api/user")
 app.include_router(questions.app,prefix="/api/questions")
 app.include_router(company.app,prefix="/api/company_signup")
-app.include_router(similarity_score.app,prefix="/api/text-similarity")
+app.include_router(checkAnswer.app,prefix="/api/text-similarity")
 

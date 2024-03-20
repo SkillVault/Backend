@@ -1,6 +1,6 @@
 import os
 from models.questions import FetchQuestion
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -11,7 +11,7 @@ load_dotenv()  # Load environment variables from .env file
 MONGODB_URI = os.getenv("MONGODB_URI")
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
-collection = db.flutter
+collection = db.react
 
 @app.get("/",response_model=FetchQuestion)
 async def get_question(QNo: int,Level: int):

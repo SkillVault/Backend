@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Form
-from models.user import CreateUser,GoogleUser,UpdateUser
+from models.user import CreateUser,GoogleUser,UpdateUser,CandidateLogin,CandidateSignup
 from dotenv import load_dotenv
 import os
+from database.candidate_data import login, signup
 from motor.motor_asyncio import AsyncIOMotorClient
-
+import logging
+import bcrypt
 
 
 load_dotenv()  # Load environment variables from .env file
@@ -14,13 +16,46 @@ db = client.skillvault
 collection = db.candidates
 app = APIRouter()
 
+SALT = bcrypt.gensalt(10)
 
-@app.post("/", response_model=CreateUser)
-async def add_user_data(user_info: CreateUser):
-    # Insert user_info into the MongoDB collection
-    await collection.insert_one(user_info.dict())
-    return user_info
 
+@app.post("/candidate_login", response_model=dict)
+async def candidate_login(candidate: CandidateLogin) -> dict:
+    try:
+        login_info = await login(candidate.email)
+        stored_password_hash = login_info["password"].encode()
+        entered_password = candidate.password.encode()
+
+        if not bcrypt.checkpw(entered_password, stored_password_hash):
+            raise HTTPException(status_code=401, detail="Incorrect password")
+        else:
+            return {"message": "Login successful"}
+
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Candidate not found")
+    
+    except Exception as e:
+        logging.error(f"An error occurred during candidate login: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+
+@app.post("/candidate_signup", response_model= dict)
+async def candidate_signup(candidate: CandidateSignup) -> dict:
+    try:
+        byte_password = bcrypt.hashpw(candidate.password.encode(), SALT)
+        hashed_password = byte_password.decode()
+        result = await signup(candidate.username, candidate.email, hashed_password)
+        return result
+    
+    except Exception as e:
+        logging.error(f"An error occurred during candidate signup: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+
+
+# google user
 
 @app.post("/create_google_user", response_model=GoogleUser)
 async def createGoogleUser(user_info: GoogleUser):
