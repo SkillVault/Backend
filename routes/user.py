@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form,HTTPException
 from models.user import CreateUser,GoogleUser,UpdateUser,CandidateLogin,CandidateSignup
 from dotenv import load_dotenv
 import os
@@ -9,7 +9,7 @@ import bcrypt
 
 
 load_dotenv()  # Load environment variables from .env file
-MONGODB_URI = os.getenv("MONGODB_URI")
+MONGODB_URI="mongodb+srv://bibinjose:bibinmongodb@cluster0.8cod5vz.mongodb.net/?retryWrites=true&w=majority"
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 

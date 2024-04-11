@@ -9,10 +9,7 @@ import logging
 # Ensure you import the function for database operations correctly
 # from database import create_user, create_questions  # Assuming you'll add a new function for question insertion
 
-origin = [
-'http://localhost:5173',
-'https://skillvault-backend.onrender.com'
-]
+origin = ['http://localhost:5173','https://skillvault-backend.onrender.com']
 
 app = FastAPI()
 app.add_middleware(
@@ -26,10 +23,10 @@ app.add_middleware(
 
 @app.get('/')
 def read_root():
-    return {"hello": "Welcome to skillvault"}
+    return {"message": "Welcome to skillvault"}
 
 app.include_router(user.app,prefix="/api/user")
 app.include_router(questions.app,prefix="/api/questions")
-app.include_router(company.app,prefix="/api/company_signup")
+app.include_router(company.app,prefix="/api/company")
 app.include_router(checkAnswer.app,prefix="/api/text-similarity")
 

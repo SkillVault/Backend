@@ -7,7 +7,6 @@ from fastapi import APIRouter
 
 
 load_dotenv()
-# MONGODB_URI = os.getenv("MONGODB_URI")
 MONGODB_URI="mongodb+srv://bibinjose:bibinmongodb@cluster0.8cod5vz.mongodb.net/?retryWrites=true&w=majority"
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault

@@ -1,20 +1,23 @@
 from langchain_together import Together
+import os
+from dotenv import load_dotenv
 from kor.extraction import create_extraction_chain
 from kor.nodes import Object, Text
 from langchain_core.messages import HumanMessage
 from fastapi import APIRouter,HTTPException
 from typing import Optional
-import os
-from dotenv import load_dotenv
 from models.questions import CheckAnswer
-load_dotenv()  # Load environment variables from .env file
-TOGETHER_API = os.getenv("TOGETHER_API")
+
+load_dotenv()
+
+TOGETHER_URI = os.getenv('TOGETHER_URI')
+
 llm = Together(
     model="mistralai/Mistral-7B-Instruct-v0.2",
     temperature=0.7,
     max_tokens=128,
     top_k=1,
-    together_api_key=TOGETHER_API,
+    together_api_key=TOGETHER_URI,
 )
 
 schema = Object(

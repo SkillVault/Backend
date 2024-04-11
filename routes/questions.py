@@ -8,7 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 app = APIRouter()
 load_dotenv()  # Load environment variables from .env file
-MONGODB_URI = os.getenv("MONGODB_URI")
+MONGODB_URI="mongodb+srv://bibinjose:bibinmongodb@cluster0.8cod5vz.mongodb.net/?retryWrites=true&w=majority"
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.react
