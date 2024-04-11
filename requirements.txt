@@ -6,4 +6,5 @@
  pymongo
  bcrypt
  langchain_together
+ kor
  
