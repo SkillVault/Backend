@@ -5,4 +5,5 @@
  motor  
  pymongo
  bcrypt
+ langchain_together
  
