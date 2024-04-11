@@ -4,5 +4,5 @@
  fastapi-cors  
  motor  
  pymongo
-
+ bcrypt
  
