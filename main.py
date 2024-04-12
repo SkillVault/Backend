@@ -14,7 +14,8 @@ origin = ['http://localhost:5173','https://skillvault-backend.onrender.com']
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origin,
+    # allow_origins=origin,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
