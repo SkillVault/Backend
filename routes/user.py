@@ -76,13 +76,13 @@ async def fetchGoogleUser(user_mail:str):
         return GoogleUser(**existing_user)
    
 @app.put("/update_user",response_model=UpdateUser)
-async def update_google_user(user_sub: str, user_data: UpdateUser):
+async def update_google_user(user_mail: str, user_data: UpdateUser):
     # Check if the user exists
-    existing_user = await collection.find_one({"user_sub": user_sub})
+    existing_user = await collection.find_one({"user_mail": user_mail})
     if existing_user:
         # Update the user's about field
         result = await collection.update_one(
-            {"user_sub": user_sub},  # Filter criteria
+            {"user_mail": user_mail},  # Filter criteria
             {"$set": {
               
                 "first_name": user_data.first_name,

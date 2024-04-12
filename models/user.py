@@ -63,7 +63,6 @@ class GoogleUser(BaseModel):
     user_name: str
     user_mail: str
     profile_url: str
-    user_sub: str
     first_name: str
     last_name: str
     country: str
@@ -78,7 +77,6 @@ class GetUser(BaseModel):
     user_name: str
     user_mail: str
     profile_url: str
-    user_sub: str
     first_name: str
     last_name: str
     country: str
