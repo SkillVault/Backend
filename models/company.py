@@ -19,10 +19,12 @@ class AddJob(BaseModel):
     location : str
     openings : str
     salary : str
+    skillRequired: str
 
 class GetJob(BaseModel):
     job_title : str
     category : str
+    skillRequired: str
     location : str
     openings : str
     salary : str
