@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Form,HTTPException
-from models.user import CreateUser,GoogleUser,UpdateUser,CandidateLogin,CandidateSignup
+from models.user import CreateUser,GoogleUser,UpdateGoogleUser,CandidateLogin,CandidateSignup
 from dotenv import load_dotenv
 import os
 from database.candidate_data import login, signup
@@ -75,8 +75,8 @@ async def fetchGoogleUser(user_mail:str):
         # If the user exists, convert the MongoDB document to a GoogleUser model and return
         return GoogleUser(**existing_user)
    
-@app.put("/update_user",response_model=GoogleUser)
-async def update_google_user(user_mail: str, user_data: GoogleUser):
+@app.put("/update_user",response_model=UpdateGoogleUser)
+async def update_google_user(user_mail: str, user_data: UpdateGoogleUser):
     # Check if the user exists
     existing_user = await collection.find_one({"user_mail": user_mail})
     if existing_user:

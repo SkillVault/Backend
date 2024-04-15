@@ -86,8 +86,9 @@ class GetUser(BaseModel):
     about: str
     address: str
 
-class UpdateUser(BaseModel):
-
+class UpdateGoogleUser(BaseModel):
+    
+    user_name : str
     first_name: str
     last_name: str
     country: str
