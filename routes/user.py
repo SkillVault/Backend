@@ -75,8 +75,8 @@ async def fetchGoogleUser(user_mail:str):
         # If the user exists, convert the MongoDB document to a GoogleUser model and return
         return GoogleUser(**existing_user)
    
-@app.put("/update_user",response_model=UpdateUser)
-async def update_google_user(user_mail: str, user_data: UpdateUser):
+@app.put("/update_user",response_model=GoogleUser)
+async def update_google_user(user_mail: str, user_data: GoogleUser):
     # Check if the user exists
     existing_user = await collection.find_one({"user_mail": user_mail})
     if existing_user:
@@ -84,7 +84,7 @@ async def update_google_user(user_mail: str, user_data: UpdateUser):
         result = await collection.update_one(
             {"user_mail": user_mail},  # Filter criteria
             {"$set": {
-              
+                "user_name":user_data.user_name,
                 "first_name": user_data.first_name,
                 "last_name": user_data.last_name,
                 "country": user_data.country,
