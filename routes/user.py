@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form,HTTPException,Query
+from fastapi import APIRouter, Form,HTTPException
 from models.user import CreateUser,GoogleUser,UpdateUser,CandidateLogin,CandidateSignup
 from dotenv import load_dotenv
 import os
@@ -67,7 +67,7 @@ async def createGoogleUser(user_info: GoogleUser):
 
 
 @app.get("/get_user")
-async def fetchGoogleUser(user_mail:str== Query(..., regex="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")):
+async def fetchGoogleUser(user_mail:str):
     # Attempt to find the user in the database
     existing_user = await collection.find_one({"user_mail": user_mail})
     
