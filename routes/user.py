@@ -79,9 +79,9 @@ async def fetchGoogleUser(email:str):
        
 
 @app.get("/get_profile")
-async def fetchProfile(user_name:str):
+async def fetchProfile(username:str):
     # Attempt to find the user in the database
-    existing_user = await collection.find_one({"user_name": user_name})
+    existing_user = await collection.find_one({"username": username})
     
     if existing_user:
         # If the user exists, convert the MongoDB document to a GoogleUser model and return
@@ -92,9 +92,11 @@ async def update_google_user(email: str, user_data: UpdateGoogleUser):
     # Check if the user exists
     existing_user = await collection.find_one({"email": email})
     if existing_user:
+        candidate_dict = dict(existing_user)
+        candidate_dict.pop('_id', None)
         # Update the user's about field
         result = await collection.update_one(
-            {"user_mail": user_mail},  # Filter criteria
+            {"email": email},  # Filter criteria
             {"$set": {
                 "username":user_data.user_name,
                 "first_name": user_data.first_name,
@@ -102,7 +104,7 @@ async def update_google_user(email: str, user_data: UpdateGoogleUser):
                 "country": user_data.country,
                 "state": user_data.state,
                 "city": user_data.city,
-                "postal_code": user_data.postal_code,
+                "pincode": user_data.postal_code,
                 "about_me": user_data.about,
                 "address": user_data.address
             
