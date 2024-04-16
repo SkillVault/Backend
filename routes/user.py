@@ -20,7 +20,7 @@ SALT = bcrypt.gensalt(10)
 
 
 @app.post("/candidate_login", response_model=dict)
-async def candidate_login(candidate: CandidateLogin) -> dict:
+async def candidate_login(candidate: Login) -> dict:
     try:
         login_info = await login(candidate.email)
         stored_password_hash = login_info["password"].encode()
