@@ -69,7 +69,7 @@ async def createGoogleUser(user_info: GoogleUser):
 @app.get("/get_user")
 async def fetchGoogleUser(user_name:str):
     # Attempt to find the user in the database
-    existing_user = await collection.find_one({"user_mail": user_mail})
+    existing_user = await collection.find_one({"user_name": user_name})
     
     if existing_user:
         # If the user exists, convert the MongoDB document to a GoogleUser model and return
