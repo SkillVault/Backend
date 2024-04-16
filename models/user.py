@@ -89,12 +89,10 @@ class GoogleUser(BaseModel):
     resume:str
     first_name: str
     last_name: str
-    country: str
-    state: str
-    city: str
-    pincode: str
+   
     about_me: str
-    address: str
+    address: Optional[Address] = None
+
 
 
 class GetUser(BaseModel):
@@ -106,12 +104,10 @@ class GetUser(BaseModel):
     first_name: str
     last_name: str
     experience: int
-    country: str
-    state: str
-    city: str
-    pincode: str
+   
     about_me: str
-    address: str
+    address: Optional[Address] = None
+
 
 class UpdateGoogleUser(BaseModel):
     
@@ -122,11 +118,9 @@ class UpdateGoogleUser(BaseModel):
     photo:str
     first_name: str
     last_name: str
-    country: str
-    state: str
-    city: str
-    pincode: str
+   
     about_me: str
-    address: str
+    address: Optional[Address] = None
+
 
 
