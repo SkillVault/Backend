@@ -16,9 +16,6 @@ class Address(BaseModel):
     state: str
     pincode: str
 
-class InterviewScore(BaseModel):
-    interview_type: str
-    score: int
 
 class CandidateSignup(BaseModel):
     username: str

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Form,HTTPException
-from models.user import CreateUser,GoogleUser,UpdateGoogleUser,CandidateLogin,CandidateSignup
+from models.user import CreateUser,GoogleUser,UpdateGoogleUser,Login,CandidateSignup
 from dotenv import load_dotenv
 import os
 from database.candidate_data import login, signup
