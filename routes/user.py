@@ -84,8 +84,10 @@ async def fetchProfile(username:str):
     existing_user = await collection.find_one({"username": username})
     
     if existing_user:
-        # If the user exists, convert the MongoDB document to a GoogleUser model and return
-        return GoogleUser(**existing_user)
+        candidate_dict = dict(existing_user)
+        candidate_dict.pop('_id', None)
+        return candidate_dict
+       
    
 @app.put("/update_user",response_model=UpdateGoogleUser)
 async def update_google_user(email: str, user_data: UpdateGoogleUser):
