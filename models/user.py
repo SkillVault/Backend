@@ -92,7 +92,7 @@ class GoogleUser(BaseModel):
     country: str
     state: str
     city: str
-    postal_code: str
+    pincode: str
     about_me: str
     address: str
 
@@ -109,7 +109,7 @@ class GetUser(BaseModel):
     country: str
     state: str
     city: str
-    postal_code: str
+    pincode: str
     about_me: str
     address: str
 
@@ -125,7 +125,7 @@ class UpdateGoogleUser(BaseModel):
     country: str
     state: str
     city: str
-    postal_code: str
+    pincode: str
     about_me: str
     address: str
 

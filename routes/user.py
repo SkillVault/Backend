@@ -67,13 +67,16 @@ async def createGoogleUser(user_info: GoogleUser):
 
 
 @app.get("/get_user")
-async def fetchGoogleUser(user_mail:str):
+async def fetchGoogleUser(email:str):
     # Attempt to find the user in the database
-    existing_user = await collection.find_one({"user_mail": user_mail})
+    existing_user = await collection.find_one({"email": email})
     
     if existing_user:
-        # If the user exists, convert the MongoDB document to a GoogleUser model and return
-        return GoogleUser(**existing_user)
+        
+        candidate_dict = dict(existing_user)
+        candidate_dict.pop('_id', None)
+        return candidate_dict
+       
 
 @app.get("/get_profile")
 async def fetchProfile(user_name:str):
@@ -85,22 +88,22 @@ async def fetchProfile(user_name:str):
         return GoogleUser(**existing_user)
    
 @app.put("/update_user",response_model=UpdateGoogleUser)
-async def update_google_user(user_mail: str, user_data: UpdateGoogleUser):
+async def update_google_user(email: str, user_data: UpdateGoogleUser):
     # Check if the user exists
-    existing_user = await collection.find_one({"user_mail": user_mail})
+    existing_user = await collection.find_one({"email": email})
     if existing_user:
         # Update the user's about field
         result = await collection.update_one(
             {"user_mail": user_mail},  # Filter criteria
             {"$set": {
-                "user_name":user_data.user_name,
+                "username":user_data.user_name,
                 "first_name": user_data.first_name,
                 "last_name": user_data.last_name,
                 "country": user_data.country,
                 "state": user_data.state,
                 "city": user_data.city,
                 "postal_code": user_data.postal_code,
-                "about": user_data.about,
+                "about_me": user_data.about,
                 "address": user_data.address
             
             }}  # Update operation using $set
