@@ -80,18 +80,9 @@ class Login(BaseModel):
     password: str
 
 
-class GoogleUser(BaseModel):
-    username: str
-    email: str
-    profile_url: str
-    experience: int
-    skills:str
-    resume:str
-    first_name: str
-    last_name: str
-   
-    about_me: str
-    address: Optional[Address] = None
+class GoogleUser(BaseUser):
+   username:str
+   email: str
 
 
 
