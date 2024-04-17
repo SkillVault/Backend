@@ -19,7 +19,7 @@ app = APIRouter()
 SALT = bcrypt.gensalt(10)
 
 
-@app.post("/candidate_login", response_model=dict)
+@router.post("/candidate_login", response_model=dict)
 async def candidate_login(candidate: Login) -> dict:
     try:
         login_info = await login(candidate.email)
@@ -29,7 +29,9 @@ async def candidate_login(candidate: Login) -> dict:
         if not bcrypt.checkpw(entered_password, stored_password_hash):
             raise HTTPException(status_code=401, detail="Incorrect password")
         else:
-            return {"message": "Login successful"}
+            # Generate JWT token
+            access_token = create_access_token(data={"email": candidate.email})
+            return {"access_token": access_token, "token_type": "bearer"}
 
     except KeyError:
         raise HTTPException(status_code=404, detail="Candidate not found")
@@ -37,11 +39,11 @@ async def candidate_login(candidate: Login) -> dict:
     except Exception as e:
         logging.error(f"An error occurred during candidate login: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+    
+    
 
-
-
-@app.post("/candidate_signup", response_model= dict)
-async def candidate_signup(candidate: CandidateSignup) -> dict:
+@router.post("/candidate_signup", response_model=dict)
+async def candidate_signup(candidate: Candidate) -> dict:
     try:
         byte_password = bcrypt.hashpw(candidate.password.encode(), SALT)
         hashed_password = byte_password.decode()
@@ -51,8 +53,6 @@ async def candidate_signup(candidate: CandidateSignup) -> dict:
     except Exception as e:
         logging.error(f"An error occurred during candidate signup: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
-
-
 
 
 # google user
