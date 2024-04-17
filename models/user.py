@@ -23,7 +23,7 @@ class CandidateSignup(BaseModel):
     password: str
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    address: Optional[str] = None
+    address: Optional[Address] = None
     job_role: Optional[str] = None
     company: Optional[str] = None
     experience: Optional[int] = None
@@ -104,10 +104,7 @@ class GetUser(BaseModel):
     first_name: str
     last_name: str
     experience: int
-    country: str
-    state: str
-    city: str
-    pincode: str
+    address: Optional[Address] = None
     about_me: str
     address: str
 
@@ -120,11 +117,8 @@ class UpdateGoogleUser(BaseModel):
     photo:str
     first_name: str
     last_name: str
-    country: str
-    state: str
-    city: str
-    pincode: str
+    address: Optional[Address] = None
     about_me: str
-    address: str
+  
 
 

@@ -17,6 +17,7 @@ collection = db.candidates
 app = APIRouter()
 
 SALT = bcrypt.gensalt(10)
+router = APIRouter()
 
 
 @router.post("/candidate_login", response_model=dict)
