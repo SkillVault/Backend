@@ -1,24 +1,37 @@
-from fastapi import APIRouter, Form,HTTPException
-from models.user import CreateUser,GoogleUser,UpdateGoogleUser,Login,CandidateSignup
+from fastapi import APIRouter, HTTPException
+from models.user import Candidate, GoogleUser, Login,UpdateUser
+from database.candidate_data import login, signup, fetchUserDetails, checkUserExist, updateUserDetails
 from dotenv import load_dotenv
 import os
-from database.candidate_data import login, signup
 from motor.motor_asyncio import AsyncIOMotorClient
 import logging
 import bcrypt
-
+from datetime import datetime, timedelta
+import jwt
 
 load_dotenv()  # Load environment variables from .env file
-MONGODB_URI="mongodb+srv://bibinjose:bibinmongodb@cluster0.8cod5vz.mongodb.net/?retryWrites=true&w=majority"
+MONGODB_URI = os.getenv("MONGODB_URI")
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
-
 collection = db.candidates
-app = APIRouter()
 
-SALT = bcrypt.gensalt(10)
 router = APIRouter()
 
+
+SALT = bcrypt.gensalt(10)
+SECRET_KEY = "g5iv0jd5hi4hkf5iu8"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 @router.post("/candidate_login", response_model=dict)
 async def candidate_login(candidate: Login) -> dict:
@@ -44,7 +57,7 @@ async def candidate_login(candidate: Login) -> dict:
     
 
 @router.post("/candidate_signup", response_model=dict)
-async def candidate_signup(candidate: CandidateSignup) -> dict:
+async def candidate_signup(candidate: Candidate) -> dict:
     try:
         byte_password = bcrypt.hashpw(candidate.password.encode(), SALT)
         hashed_password = byte_password.decode()
@@ -56,30 +69,24 @@ async def candidate_signup(candidate: CandidateSignup) -> dict:
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-# google user
 
-@app.post("/create_google_user", response_model=GoogleUser)
-async def createGoogleUser(user_info: GoogleUser):
-  
-        await collection.insert_one(user_info.dict())
-        # Return the new user data
-        return user_info
+@router.post("/create_google_user", response_model=GoogleUser)
+async def create_google_user(user_info: GoogleUser):
+    await collection.insert_one(user_info.dict())
+    return user_info
 
 
 
-@app.get("/get_user")
-async def fetchGoogleUser(email:str):
-    # Attempt to find the user in the database
-    existing_user = await collection.find_one({"email": email})
+@router.get("/get_user")
+async def fetch_google_user(email: str):
+    existing_user = await fetchUserDetails(email)
     
     if existing_user:
-        
-        candidate_dict = dict(existing_user)
-        candidate_dict.pop('_id', None)
-        return candidate_dict
-       
+        return existing_user
+    else: 
+        return False
 
-@app.get("/get_profile")
+@router.get("/get_profile")
 async def fetchProfile(username:str):
     # Attempt to find the user in the database
     existing_user = await collection.find_one({"username": username})
@@ -88,34 +95,13 @@ async def fetchProfile(username:str):
         candidate_dict = dict(existing_user)
         candidate_dict.pop('_id', None)
         return candidate_dict
-       
-   
-@app.put("/update_user",response_model=UpdateGoogleUser)
-async def update_google_user(email: str, user_data: UpdateGoogleUser):
-    # Check if the user exists
-    existing_user = await collection.find_one({"email": email})
+
+@router.put("/update_candidate", response_model=dict)
+async def update_google_user(email: str, user_data: UpdateUser):
+    existing_user = await checkUserExist(email)
     if existing_user:
-        candidate_dict = dict(existing_user)
-        candidate_dict.pop('_id', None)
-        # Update the user's about field
-        result = await collection.update_one(
-            {"email": email},  # Filter criteria
-            {"$set": {
-                "username":user_data.user_name,
-                "first_name": user_data.first_name,
-                "last_name": user_data.last_name,
-                "country": user_data.country,
-                "state": user_data.state,
-                "city": user_data.city,
-                "pincode": user_data.postal_code,
-                "about_me": user_data.about,
-                "address": user_data.address
-            
-            }}  # Update operation using $set
-        )
-        if result.modified_count == 1:
-            return user_data
-        else:
-            raise HTTPException(status_code=500, detail="Failed to update user")
+        result = await updateUserDetails(email, user_data)
+        return result
     else:
-        raise HTTPException(status_code=404, detail="User not found")
+        return {"ERROR": "user not found"}
+

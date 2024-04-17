@@ -6,14 +6,16 @@ from fastapi.responses import JSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 
 
-app = APIRouter()
+
 load_dotenv()  # Load environment variables from .env file
-MONGODB_URI="mongodb+srv://bibinjose:bibinmongodb@cluster0.8cod5vz.mongodb.net/?retryWrites=true&w=majority"
+MONGODB_URI = os.getenv("MONGODB_URI")
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.react
 
-@app.get("/",response_model=FetchQuestion)
+router = APIRouter()
+
+@router.get("/",response_model=FetchQuestion)
 async def get_question(QNo: int,Level: int):
     try:
         question_document = await collection.find_one({"QNo": QNo,"Level": Level})

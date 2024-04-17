@@ -2,39 +2,6 @@ from pydantic import BaseModel
 from typing import List,Optional
 
 
-
-
-class CreateUser(BaseModel):
-   
-    mailid: str
-    password: str
-
-
-class Address(BaseModel):
-    first_line: str
-    country: str
-    state: str
-    pincode: str
-
-
-class CandidateSignup(BaseModel):
-    username: str
-    email: str
-    password: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    address: Optional[Address] = None
-    job_role: Optional[str] = None
-    company: Optional[str] = None
-    experience: Optional[int] = None
-    resume: Optional[str] = None
-    photo: Optional[str] = None
-    about_me: Optional[str] = None
-    skills: Optional[str] = None
-    interview_scores: Optional[str] = None
-
-
-
 class Address(BaseModel):
     first_line: str
     country: str
@@ -74,42 +41,11 @@ class Candidate(BaseUser):
     email: str
     password: str
 
+class GoogleUser(BaseUser):
+    username: str
+    email: str
+
     
 class Login(BaseModel):
     email: str
     password: str
-
-
-class GoogleUser(BaseUser):
-   username:str
-   email: str
-
-
-
-class GetUser(BaseModel):
-    username: str
-    email: str
-    skills:str
-    resume:str
-    photo: str
-    first_name: str
-    last_name: str
-    experience: int
-    address: Optional[Address] = None
-    about_me: str
-    address: str
-
-class UpdateGoogleUser(BaseModel):
-    
-    username : str
-    experience: int
-    resume:str
-    skills:str
-    photo:str
-    first_name: str
-    last_name: str
-    address: Optional[Address] = None
-    about_me: str
-  
-
-

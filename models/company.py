@@ -1,35 +1,25 @@
 from pydantic import BaseModel
+from typing import Optional
 
 class CompanysignUp(BaseModel):
-    companyName : str
-    email : str
-    website : str
+    company_name : str
+    company_email : str
+    company_website : str
     password : str
-
-class CompanyInfo(BaseModel):
-    companyName : str
-    email : str
-    website : str
-
 
 
 class AddJob(BaseModel):
     job_title : str
+    skills: str
     category : str
     location : str
-    skillRequired: str
-    openings : str
-    salary : str
-
-class GetJob(BaseModel):
-    job_title : str
-    category : str
-    location : str
-    skillRequired: str
     openings : str
     salary : str
     
-
-class CompanyLogin(BaseModel):
-    email : str
-    password : str
+class GetJob(BaseModel):
+    job_title : Optional[str] = None
+    category : Optional[str] = None
+    location : Optional[str] = None
+    skills: Optional[str] = None
+    openings : Optional[str] = None
+    salary : Optional[str] = None

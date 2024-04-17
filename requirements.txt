@@ -7,4 +7,9 @@
  bcrypt
  langchain_together
  kor
+ python-multipart
+ PyJWT
  
+
+  
+
