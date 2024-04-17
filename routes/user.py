@@ -44,7 +44,7 @@ async def candidate_login(candidate: Login) -> dict:
     
 
 @router.post("/candidate_signup", response_model=dict)
-async def candidate_signup(candidate: Candidate) -> dict:
+async def candidate_signup(candidate: CandidateSignup) -> dict:
     try:
         byte_password = bcrypt.hashpw(candidate.password.encode(), SALT)
         hashed_password = byte_password.decode()
