@@ -33,7 +33,7 @@ class UpdateUser(BaseModel):
     company: Optional[str] = None
     experience: Optional[int] = None
     resume: Optional[str] = None
-    photo:  [UploadFile] = File(...)
+    photo: Optional[str] = None
     about_me: Optional[str] = None
 
 class Candidate(BaseUser):
