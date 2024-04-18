@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile, Form
+from fastapi import APIRouter, HTTPException
 from models.user import Candidate, GoogleUser, Login,UpdateUser
 from database.candidate_data import login, signup, fetchUserDetails, checkUserExist, updateUserDetails
 from dotenv import load_dotenv
@@ -14,10 +14,8 @@ MONGODB_URI = os.getenv("MONGODB_URI")
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.candidates
+
 router = APIRouter()
-
-
-
 
 
 SALT = bcrypt.gensalt(10)
@@ -99,22 +97,11 @@ async def fetchProfile(username:str):
         return candidate_dict
 
 @router.put("/update_candidate", response_model=dict)
-async def update_google_user(email: str = Form(...), user_data: UpdateUser = Form(...), photo: UploadFile = File(...)):
+async def update_google_user(email: str, user_data: UpdateUser):
     existing_user = await checkUserExist(email)
     if existing_user:
-        # Store the photo in MongoDB
-        contents = await photo.read()
-        # Convert to the appropriate format if needed, store in MongoDB
-        # For example, store as binary data or convert to base64
-        await store_photo_in_mongodb(email, contents)
-
-        # Update other user details as before
         result = await updateUserDetails(email, user_data)
         return result
     else:
         return {"ERROR": "user not found"}
 
-
-def store_photo_in_mongodb(email, photo_data):
-    
-    collection.update_one({'email': email}, {'$set': {'photo': photo_data}})
