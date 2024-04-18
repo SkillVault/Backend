@@ -14,9 +14,10 @@ MONGODB_URI = os.getenv("MONGODB_URI")
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.candidates
-
-
 router = APIRouter()
+
+
+
 
 
 SALT = bcrypt.gensalt(10)
