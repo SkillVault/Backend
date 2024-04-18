@@ -17,7 +17,7 @@ class BaseUser(BaseModel):
     company: Optional[str] = None
     experience: Optional[int] = None
     resume: Optional[str] = None
-    photo: Optional[UploadFile,str] = File(...)
+    photo: Optional[str] = None
     about_me: Optional[str] = None
     skills: Optional[str] = None
     interview_scores: Optional[str] = None
@@ -33,7 +33,7 @@ class UpdateUser(BaseModel):
     company: Optional[str] = None
     experience: Optional[int] = None
     resume: Optional[str] = None
-    photo: Optional[str] = None
+    photo:  [UploadFile] = File(...)
     about_me: Optional[str] = None
 
 class Candidate(BaseUser):

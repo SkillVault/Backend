@@ -1,5 +1,8 @@
  
  fastapi 
+ File, 
+ UploadFile, 
+ Form
  uvicorn 
  fastapi-cors  
  motor  
