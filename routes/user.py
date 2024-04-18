@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,File, UploadFile
 from models.user import Candidate, GoogleUser, Login,UpdateUser
 from database.candidate_data import login, signup, fetchUserDetails, checkUserExist, updateUserDetails
 from dotenv import load_dotenv
