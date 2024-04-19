@@ -4,9 +4,9 @@ from typing import Union
 class FetchQuestion(BaseModel):
     QNo: int 
     Question: str
-    # optionA: Union[int, str]
-    # optionB: Union[int, str]
-    # optionC: Union[int, str]
+    optionA: Optional[Union[int, str]] = None
+    optionB: Optional[Union[int, str]] = None
+    optionC: Optional[Union[int, str]] = None
     Answer: Union[int, str]
     Level: int
 
