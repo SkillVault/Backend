@@ -7,9 +7,8 @@ class FetchQuestion(BaseModel):
     optionA: Union[int, str]
     optionB: Union[int, str]
     optionC: Union[int, str]
-    Correct: Union[int, str]
+    Answer: Union[int, str]
     Level: int
-    Answer: str
 
 class CheckAnswer(BaseModel):
     question: str
