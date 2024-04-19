@@ -20,9 +20,10 @@ async def get_question(QNo: int,Level: int):
     try:
         question_document = await collection.find_one({"QNo": QNo,"Level": Level})
         if question_document:
-            return FetchQuestion(**question_document)
-        else:
-            raise HTTPException(status_code=404, detail="Question not found")
+            question_dict = dict(question_document)
+            question_dict.pop('_id', None)
+        return question_dict
+
     except ValueError as e:  # If Q_No is not an integer
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:  # Catch all other exceptions
