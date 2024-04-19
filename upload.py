@@ -11,7 +11,7 @@ client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.react
 # Step 1: Read Excel file
-excel_file_path = "C:/Users/bibin/OneDrive/Desktop/react1.xlsx"
+excel_file_path = 'D:/Downloads/React snippets.xlsx'
 df = pd.read_excel(excel_file_path)
 
 
