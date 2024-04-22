@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models.user import Candidate, GoogleUser, Login,UpdateUser
+from models.user import Candidate, GoogleUser, Login,UpdateUser,ApplyJob
 from database.candidate_data import login, signup, fetchUserDetails, checkUserExist, updateUserDetails
 from dotenv import load_dotenv
 import os
@@ -14,6 +14,7 @@ MONGODB_URI = os.getenv("MONGODB_URI")
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.candidates
+collection1 = db.appliedjobs
 
 router = APIRouter()
 
@@ -104,4 +105,11 @@ async def update_google_user(email: str, user_data: UpdateUser):
         return result
     else:
         return {"ERROR": "user not found"}
+
+
+@router.post('/user/apply_job',response_model=ApplyJob)
+async def applyJob(applyJob:ApplyJob):
+    await collection1.insert_one(applyJob.dict())
+    return applyJob
+
 

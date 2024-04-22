@@ -49,3 +49,8 @@ class GoogleUser(BaseUser):
 class Login(BaseModel):
     email: str
     password: str
+
+class ApplyJob(BaseModel):
+    userName: str
+    link: str
+    companyName: str
