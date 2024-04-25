@@ -107,7 +107,7 @@ async def update_google_user(email: str, user_data: UpdateUser):
         return {"ERROR": "user not found"}
 
 
-@router.post('/user/apply_job',response_model=ApplyJob)
+@router.post('/apply_job',response_model=ApplyJob)
 async def applyJob(applyJob:ApplyJob):
     await collection1.insert_one(applyJob.dict())
     return applyJob
