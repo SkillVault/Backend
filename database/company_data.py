@@ -1,5 +1,5 @@
 import os
-from models.company import CompanyLogin,CompanysignUp,CompanyInfo
+from models.company import CompanysignUp
 from fastapi import HTTPException 
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
