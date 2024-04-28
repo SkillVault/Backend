@@ -39,7 +39,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     return encoded_jwt
 
 
-@router.post("/company_login", response_model=dict)
+@router.post("/login", response_model=dict)
 async def company_login(company_email: str = Body(...), password: str = Body(...)) -> dict:
     try:
         login_info = await login(company_email)
