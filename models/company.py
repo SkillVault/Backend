@@ -12,6 +12,7 @@ class CompanyDetails(BaseModel):
     company_email: str
     company_website: str
 
+
 class AddJob(BaseModel):
     job_title : str
     skills: str
@@ -20,6 +21,7 @@ class AddJob(BaseModel):
     openings : str
     salary : str
     companyname: str
+    website: str
     
 class GetJob(BaseModel):
     job_title : Optional[str] = None
