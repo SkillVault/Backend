@@ -19,6 +19,7 @@ class AddJob(BaseModel):
     location : str
     openings : str
     salary : str
+    companyname: str
     
 class GetJob(BaseModel):
     job_title : Optional[str] = None
