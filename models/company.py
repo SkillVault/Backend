@@ -7,6 +7,10 @@ class CompanysignUp(BaseModel):
     company_website : str
     password : str
 
+class CompanyDetails(BaseModel):
+    company_name: str
+    company_email: str
+    company_website: str
 
 class AddJob(BaseModel):
     job_title : str
