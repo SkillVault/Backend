@@ -21,7 +21,7 @@ client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.jobposts
 router = APIRouter()
-
+collection1 = db.companies
 
 SALT = bcrypt.gensalt(10)
 SECRET_KEY = "g5iv0jd5hi4hkf5iu8"
@@ -100,7 +100,7 @@ async def get_job():
 
 @router.get("/profile", response_model=CompanyDetails)
 async def profile(email: str) -> dict:
-    company_data = await collection.find_one({"company_email": email})
+    company_data = await collection1.find_one({"company_email": email})
     if company_data:
         return {
             company_data
