@@ -102,8 +102,7 @@ async def get_job():
 async def profile(email: str) -> dict:
     company_data = await collection1.find_one({"company_email": email})
     if company_data:
-        return {
-            company_data
-        }
+        return company_data  # Return as a dictionary
     else:
-        raise HTTPException(status_code=404, detail="Candidate not found")
+        raise HTTPException(status_code=404, detail="Company not found")
+
