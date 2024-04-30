@@ -2,7 +2,7 @@ import os
 from typing import List
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
-from models.company import CompanysignUp,AddJob,GetJob
+from models.company import CompanysignUp,AddJob,GetJob,CompanyDetails
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import APIRouter,HTTPException,Body
 from typing import List
@@ -97,3 +97,13 @@ async def get_job():
             status_code=500,
             content={"message": "An error occurred", "error": str(e)},
         )
+
+@router.get("/profile", response_model=CompanyDetails)
+async def profile(email: str) -> dict:
+    company_data = await collection.find_one({"company_email": email})
+    if company_data:
+        return {
+            company_data
+        }
+    else:
+        raise HTTPException(status_code=404, detail="Candidate not found")

@@ -39,11 +39,3 @@ async def login(email: str) -> dict:
         raise HTTPException(status_code=404, detail="Candidate not found")
 
 
-async def profile(email: str) -> dict:
-    company_data = await collection.find_one({"company_email": email})
-    if company_data:
-        return {
-            company_data
-        }
-    else:
-        raise HTTPException(status_code=404, detail="Candidate not found")
