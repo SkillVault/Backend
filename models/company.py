@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class CompanysignUp(BaseModel):
     company_name : str
     company_email : str
@@ -22,11 +23,15 @@ class AddJob(BaseModel):
     salary : str
     companyname: str
     website: str
+    companyemail: str
     
 class GetJob(BaseModel):
     job_title : Optional[str] = None
+    jobid: Optional[str] = None
     category : Optional[str] = None
     location : Optional[str] = None
     skills: Optional[str] = None
     openings : Optional[str] = None
     salary : Optional[str] = None
+    companyname: str
+    website: str

@@ -1,8 +1,10 @@
 import os
+from uuid import uuid4
 from typing import List
+from typing import Union,Optional
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
-from models.company import CompanysignUp,AddJob,GetJob
+from models.company import CompanysignUp,AddJob,GetJob,CompanyDetails
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import APIRouter,HTTPException,Body
 from typing import List
@@ -20,6 +22,7 @@ MONGODB_URI = os.getenv("MONGODB_URI")
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.jobposts
+collection1 = db.companies
 router = APIRouter()
 
 
@@ -72,28 +75,64 @@ async def candidate_signup(company_data: CompanysignUp) ->dict :
         logging.error(f"An error occurred during candidate signup: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+
 @router.post("/add_job", response_model=AddJob)
 async def postjob(add_job: AddJob):
-    # Insert user_info into the MongoDB collection
-    await collection.insert_one(add_job.dict())
-    return add_job
+    try:
+        # Generate a unique jobid
+        jobid = str(uuid4())
+        
+        # Insert the job into the MongoDB collection
+        await collection.insert_one({**add_job.dict(), "jobid": jobid})
+        
+        # Create an instance of AddJob with the generated jobid
+        job_with_jobid = AddJob(**add_job.dict(), jobid=jobid)
+        
+        # Return the job with the generated jobid
+        return job_with_jobid
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/get_job", response_model=List[GetJob])
-async def get_job():
+async def get_job(company_email: Optional[str] = None):
     try:
-        job_cursor = collection.find()
+        query = {}
+        if company_email:
+            query["companyname"] = company_email
+
+        job_cursor = collection.find(query)
         jobs_list = await job_cursor.to_list(length=None)  # Retrieves all documents as a list
         if jobs_list:
-            # Remove _id field from each document
+            validated_jobs = []
             for job in jobs_list:
-                job.pop("_id", None)
-            # Return list of job documents
-            return jobs_list
+                # Handle missing fields
+                job.setdefault("companyname", "")
+                job.setdefault("website", "")
+                # Convert invalid data types
+                job["openings"] = str(job.get("openings", ""))
+                # Validate and create GetJob instance
+                try:
+                    validated_job = GetJob(**job)
+                    validated_jobs.append(validated_job)
+                except ValidationError as e:
+                    # Handle validation errors
+                    print(f"Validation error for job: {job}. Error: {e}")
+            # Sort jobs based on company name if company email is provided
+            if company_email:
+                validated_jobs.sort(key=lambda x: x.companyname)
+            return validated_jobs
         else:
             # If the list is empty, there are no jobs
             raise HTTPException(status_code=404, detail="No jobs found")
     except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"message": "An error occurred", "error": str(e)},
-        )
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/profile", response_model=CompanyDetails)
+async def profile(email: str) -> dict:
+    company_data = await collection1.find_one({"company_email": email})
+    if company_data:
+        return company_data  # Return as a dictionary
+    else:
+        raise HTTPException(status_code=404, detail="Company not found")
