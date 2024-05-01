@@ -2,12 +2,12 @@ import os
 from typing import List
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
-from models.company import CompanysignUp,AddJob,GetJob,CompanyDetails
+from models.company import CompanysignUp,AddJob,GetJob
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import APIRouter,HTTPException,Body
 from typing import List
 import logging
-from database.company_data import signup,login
+from database.company_data import signup,login,profile
 import jwt
 import bcrypt
 from datetime import datetime, timedelta
@@ -21,7 +21,7 @@ client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.jobposts
 router = APIRouter()
-collection1 = db.companies
+
 
 SALT = bcrypt.gensalt(10)
 SECRET_KEY = "g5iv0jd5hi4hkf5iu8"
@@ -97,12 +97,3 @@ async def get_job():
             status_code=500,
             content={"message": "An error occurred", "error": str(e)},
         )
-
-@router.get("/profile", response_model=CompanyDetails)
-async def profile(email: str) -> dict:
-    company_data = await collection1.find_one({"company_email": email})
-    if company_data:
-        return company_data  # Return as a dictionary
-    else:
-        raise HTTPException(status_code=404, detail="Company not found")
-
