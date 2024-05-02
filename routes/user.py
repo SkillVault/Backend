@@ -112,4 +112,13 @@ async def applyJob(applyJob:ApplyJob):
     await collection1.insert_one(applyJob.dict())
     return applyJob
 
-
+@router.put('/skill_update')
+async def updateSkill(email: str, skill: dict):
+    existing_user = await checkUserExist(email)
+    if existing_user:
+        result = collection.update_one(
+            {"email": email},
+            {"$set": {"skills": skill}}
+        )
+        return {"success": "Successfully updated"}
+    return {"success": False}

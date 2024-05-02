@@ -7,8 +7,11 @@ from fastapi.responses import JSONResponse
 from models.company import CompanysignUp,AddJob,GetJob,CompanyDetails,Responses
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import APIRouter,HTTPException,Body
+from fastapi import Query
+
 from typing import List
 import logging
+from fastapi import Query
 from database.company_data import signup,login,profile
 import jwt
 import bcrypt
@@ -93,6 +96,15 @@ async def postjob(add_job: AddJob):
         return job_with_jobid
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/delete-job")
+async def delete_record(job_id: str):
+    # Delete the record from the collection
+    result = await collection.delete_one({"jobid": job_id})
+    if result.deleted_count == 1:
+        return {"message": f"Record with ID {job_id} deleted successfully"}
+    else:
+        raise HTTPException(status_code=404, detail=f"Record with ID {job_id} not found")
 
 
 @router.get("/get_job", response_model=List[GetJob])
@@ -182,3 +194,4 @@ async def profile(email: str) -> dict:
         return company_data  # Return as a dictionary
     else:
         raise HTTPException(status_code=404, detail="Company not found")
+
