@@ -23,7 +23,7 @@ client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.jobposts
 collection1 = db.companies
-responses = db.appliedjobs
+reponses = db.appliedjobs
 router = APIRouter()
 
 
@@ -165,15 +165,15 @@ async def get_job(company_email: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/responses", response_model=Responses)
-async def responses(email: str):
-    jobResponses = await responses.find().to_list(length=None)  # Convert cursor to list of documents
+@router.get("/responses", response_model=List[Responses])
+async def responses() -> List[Responses]:
+    jobResponses = await reponses.find().to_list(length=None)  # Convert cursor to list of documents
     if jobResponses:
-        # Assuming you only need to return the first response
-        response_data = jobResponses[0]
-        return Responses(**response_data)
+        # Transform each document into a Responses object
+        response_objects = [Responses(**response_data) for response_data in jobResponses]
+        return response_objects
     else:
-        return {"detail": "No responses found"} 
+        raise HTTPException(status_code=404, detail="No responses found")
 
 @router.get("/profile", response_model=CompanyDetails)
 async def profile(email: str) -> dict:
