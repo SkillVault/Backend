@@ -35,3 +35,10 @@ class GetJob(BaseModel):
     salary : Optional[str] = None
     companyname: str
     website: str
+
+class Responses(BaseModel):
+    userName: str
+    job_title : str
+    link: str
+    companyName: str
+    jobid: str

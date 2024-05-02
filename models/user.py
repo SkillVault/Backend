@@ -52,5 +52,7 @@ class Login(BaseModel):
 
 class ApplyJob(BaseModel):
     userName: str
+    job_title : str
     link: str
     companyName: str
+    jobid:str

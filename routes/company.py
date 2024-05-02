@@ -4,7 +4,7 @@ from typing import List
 from typing import Union,Optional
 from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
-from models.company import CompanysignUp,AddJob,GetJob,CompanyDetails
+from models.company import CompanysignUp,AddJob,GetJob,CompanyDetails,Responses
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import APIRouter,HTTPException,Body
 from typing import List
@@ -23,6 +23,7 @@ client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.jobposts
 collection1 = db.companies
+responses = db.appliedjobs
 router = APIRouter()
 
 
@@ -128,6 +129,51 @@ async def get_job(company_email: Optional[str] = None):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@router.get("/company_post", response_model=List[GetJob])
+async def get_job(company_email: str):
+    try:
+        query = {}
+        if company_email:
+            query["companyname"] = company_email
+
+        job_cursor = collection.find(query)
+        jobs_list = await job_cursor.to_list(length=None)  # Retrieves all documents as a list
+        if jobs_list:
+            validated_jobs = []
+            for job in jobs_list:
+                # Handle missing fields
+                job.setdefault("companyname", "")
+                job.setdefault("website", "")
+                # Convert invalid data types
+                job["openings"] = str(job.get("openings", ""))
+                # Validate and create GetJob instance
+                try:
+                    validated_job = GetJob(**job)
+                    validated_jobs.append(validated_job)
+                except ValidationError as e:
+                    # Handle validation errors
+                    print(f"Validation error for job: {job}. Error: {e}")
+            # Sort jobs based on company name if company email is provided
+            if company_email:
+                validated_jobs.sort(key=lambda x: x.companyname)
+            return validated_jobs
+        else:
+            # If the list is empty, there are no jobs
+            raise HTTPException(status_code=404, detail="No jobs found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/responses", response_model=Responses)
+async def responses(email: str):
+    jobResponses = await responses.find().to_list(length=None)  # Convert cursor to list of documents
+    if jobResponses:
+        # Assuming you only need to return the first response
+        response_data = jobResponses[0]
+        return Responses(**response_data)
+    else:
+        return {"detail": "No responses found"} 
 
 @router.get("/profile", response_model=CompanyDetails)
 async def profile(email: str) -> dict:
