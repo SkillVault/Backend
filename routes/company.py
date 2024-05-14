@@ -7,8 +7,11 @@ from fastapi.responses import JSONResponse
 from models.company import CompanysignUp,AddJob,GetJob,CompanyDetails,Responses
 from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import APIRouter,HTTPException,Body
+from fastapi import Query
+
 from typing import List
 import logging
+from fastapi import Query
 from database.company_data import signup,login,profile
 import jwt
 import bcrypt
@@ -23,7 +26,7 @@ client = AsyncIOMotorClient(MONGODB_URI)
 db = client.skillvault
 collection = db.jobposts
 collection1 = db.companies
-responses = db.appliedjobs
+reponses = db.appliedjobs
 router = APIRouter()
 
 
@@ -93,6 +96,15 @@ async def postjob(add_job: AddJob):
         return job_with_jobid
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/delete-job")
+async def delete_record(job_id: str):
+    # Delete the record from the collection
+    result = await collection.delete_one({"jobid": job_id})
+    if result.deleted_count == 1:
+        return {"message": f"Record with ID {job_id} deleted successfully"}
+    else:
+        raise HTTPException(status_code=404, detail=f"Record with ID {job_id} not found")
 
 
 @router.get("/get_job", response_model=List[GetJob])
@@ -165,15 +177,15 @@ async def get_job(company_email: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/responses", response_model=Responses)
-async def responses(email: str):
-    jobResponses = await responses.find().to_list(length=None)  # Convert cursor to list of documents
+@router.get("/responses", response_model=List[Responses])
+async def responses() -> List[Responses]:
+    jobResponses = await reponses.find().to_list(length=None)  # Convert cursor to list of documents
     if jobResponses:
-        # Assuming you only need to return the first response
-        response_data = jobResponses[0]
-        return Responses(**response_data)
+        # Transform each document into a Responses object
+        response_objects = [Responses(**response_data) for response_data in jobResponses]
+        return response_objects
     else:
-        return {"detail": "No responses found"} 
+        raise HTTPException(status_code=404, detail="No responses found")
 
 @router.get("/profile", response_model=CompanyDetails)
 async def profile(email: str) -> dict:
@@ -182,3 +194,4 @@ async def profile(email: str) -> dict:
         return company_data  # Return as a dictionary
     else:
         raise HTTPException(status_code=404, detail="Company not found")
+

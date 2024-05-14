@@ -24,6 +24,7 @@ class AddJob(BaseModel):
     companyname: str
     website: str
     companyemail: str
+    closingDate: str
     
 class GetJob(BaseModel):
     job_title : Optional[str] = None
@@ -35,6 +36,8 @@ class GetJob(BaseModel):
     salary : Optional[str] = None
     companyname: str
     website: str
+    closingDate: str
+
 
 class Responses(BaseModel):
     userName: str
